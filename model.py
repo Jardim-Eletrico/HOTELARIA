@@ -106,3 +106,30 @@ class Quarto:
         
         self.db.execute_query(query)
         self.db.disconnect()
+'''
+|===================================================|
+|                    |RESERVAS|                     |
+|===================================================|
+'''
+
+class Reserva:
+    def __init__(self):
+        self.db = Database()
+
+    def add_reserva(self, hospede_id, quarto_id, data_entrada, data_saida):
+        if data_entrada >= data_saida:
+            raise ValueError("A data de saída deve ser maior que a de entrada")
+        
+        quarto = Quarto()
+        quarto_info = quarto.consulta_quartos_id(quarto_id)
+        if not quarto_info or quarto_info["status"] != "disponivel":
+            raise ValueError("O quarto não está disponível para reserva")
+        
+        
+        query = f"INSERT INTO reservas (hospede_id, quarto_id, data_entrada, data_saida) VALUES ({hospede_id}, {quarto_id}, '{data_entrada}', '{data_saida}')"
+        self.db.connect()
+        cursor = self.db.execute_query(query)
+        
+        self.db.execute_query(f"UPDATE quartos set status='ocupado' WHERE id={quarto_id}")
+        self.db.disconnect()
+        return cursor.lastrowid
