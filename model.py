@@ -4,7 +4,7 @@ class Hospede:
     def __init__(self):
         self.db = Database()
 
-    def add(self, nome, email, telefone, cpf):
+    def add_hospede(self, nome, email, telefone, cpf):
         #Inserir novo hóspede
         if not nome or len(nome) < 3:
             raise ValueError("Nome deve ter pelo menos 3 caracteres")
@@ -48,3 +48,11 @@ class Hospede:
         
         self.db.execute_query(query)
         self.db.disconnect()
+#----------------------------------//------------------------------------
+class Quarto:
+    def __init__(self):
+        self.db = Database()
+
+    def add_quarto(self, numero, tipo, valor_diaria, status):
+        #INSERIR NOVO QUARTO
+        
