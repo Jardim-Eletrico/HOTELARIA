@@ -1,5 +1,11 @@
 from dao import Database
 
+'''
+|===================================================|
+|                    |HOSPEDE|                      |
+|===================================================|
+'''
+
 class Hospede:
     def __init__(self):
         self.db = Database()
@@ -36,7 +42,7 @@ class Hospede:
     def update_hospede(self, id, nome, email, telefone, cpf):
         #ATUALIZA AS INFORMAÇÕES DO HOSPEDE
         self.db.connect()
-        query = f"UPDATE  hospedes SET nome='{nome}', email='{email}', telefone='{telefone}', cpf='{cpf}' WHERE id = {id}"
+        query = f"UPDATE hospedes SET nome='{nome}', email='{email}', telefone='{telefone}', cpf='{cpf}' WHERE id = {id}"
         
         self.db.execute_query(query)
         self.db.disconnect()
@@ -48,11 +54,55 @@ class Hospede:
         
         self.db.execute_query(query)
         self.db.disconnect()
-#----------------------------------//------------------------------------
+'''
+|===================================================|
+|                    |QUARTO|                       |
+|===================================================|
+'''
 class Quarto:
     def __init__(self):
         self.db = Database()
 
     def add_quarto(self, numero, tipo, valor_diaria, status):
         #INSERIR NOVO QUARTO
+
+        query = f"INSERT INTO quartos (numero, tipo, valor_diaria, status) VALUES ('{numero}', '{tipo}', {valor_diaria}, '{status}')"
+        self.db.connect()
+        cursor = self.db.execute_query(query)
+        self.db.disconnect()
+        return cursor.lastrowid
+    
+    def consulta_quartos(self):
+        #LISTA TODOS OS QUARTOS
+
+        self.db.connect()
+        query = "SELECT * FROM quartos ORDER BY numero"
+        quartos = self.db.fetch_all(query)
+        self.db.disconnect()
+        return quartos
+    
+    def consulta_quartos_id(self, id):
+        #CONSULTA UM QUARTO VIA ID
+
+        self.db.connect()
+        query = f"SELECT * FROM quartos WHERE id = {id}"
+        quarto = self.db.fetch_one(query)
+        self.db.disconnect()
+        return quarto
+    
+    def update_quarto(self, id, numero, tipo, valor_diaria, status):
+        #ATUALIZA AS INFORMAÇÕES DE UM QUARTO
+
+        self.db.connect()
+        query = f"UPDATE quartos SET numero='{numero}', tipo='{tipo}', valor_diaria={valor_diaria}, status='{status}' WHERE id={id}"
+        quarto = self.db.execute_query(query)
+        self.db.disconnect()
+        return quarto
+    
+    def delete_quarto(self, id):
+        #EXCLUIR HOSPEDE
+        self.db.connect()
+        query = f"DELETE FROM quartos WHERE id = {id}"
         
+        self.db.execute_query(query)
+        self.db.disconnect()
