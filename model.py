@@ -133,3 +133,18 @@ class Reserva:
         self.db.execute_query(f"UPDATE quartos set status='ocupado' WHERE id={quarto_id}")
         self.db.disconnect()
         return cursor.lastrowid
+    
+    def consulta_reservas(self):
+        self.db.connect()
+        query = """
+            SELECT r.*, 
+                h.nome as hospede_nome, 
+                q.numero as quarto_numero
+            FROM reservas r
+            JOIN hospedes h ON r.hospede_id = h.id
+            JOIN quartos q ON r.quarto_id = q.id
+            ORDER BY r.id
+        """
+        reservas = self.db.fetch_all(query)
+        self.db.disconnect()
+        return reservas
