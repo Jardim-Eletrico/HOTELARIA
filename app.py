@@ -18,3 +18,24 @@ def root(request: Request):
     reservas = reserva_model.consulta_reservas()
 
     return templates.TemplateResponse("index.html", {"request": request, "hospedes": hospedes, "quartos": quartos, "reservas": reservas})
+
+'''
+|===================================================|
+|                    |HOSPEDE|                      |
+|===================================================|
+'''
+
+#LISTAGEM
+
+@app.get("/hospedes")
+def get_hospedes(request: Request):
+    hospedes = hospede_model.consulta_hospedes()
+
+    return templates.TemplateResponse("index.html", {"request": request, "hospedes": hospedes})
+
+#CADASTRO
+@app.get("/add_hospede")
+def add_hospede(request: Request):
+    hospede = hospede_model.add_hospede()
+
+    return templates.TemplateResponse("index.html", {"request": request, "hospede": hospede})
