@@ -148,3 +148,55 @@ class Reserva:
         reservas = self.db.fetch_all(query)
         self.db.disconnect()
         return reservas
+    
+    def consulta_reserva(self, id):
+        self.db.connect()
+        query = f"""
+            SELECT r.*, 
+                h.nome as hospede_nome, 
+                q.numero as quarto_numero
+            FROM reservas r
+            JOIN hospedes h ON r.hospede_id = h.id
+            JOIN quartos q ON r.quarto_id = q.id
+            WHERE r.id = {id}
+        """
+        reserva = self.db.fetch_one(query)
+        self.db.disconnect()
+        return reserva
+    
+    def update_reserva(self, id, hospede_id, quarto_id, data_entrada, data_saida):
+        reserva_antiga = self.consulta_reserva(id)
+        if not reserva_antiga:
+            raise ValueError("Reserva não encontrada")
+        
+        quarto_antigo_id = reserva_antiga['quarto_id']
+
+        self.db.connect()
+
+        if quarto_antigo_id != quarto_id:
+            self.db.execute_query(f"UPDATE quartos SET status='disponivel' WHERE id={quarto_antigo_id}")
+
+            self.db.execute_query(f"UPDATE quartos SET status='ocupado' WHERE id={quarto_id}")
+
+        query = f"""
+            UPDATE reservas 
+            SET hospede_id={hospede_id}, 
+                quarto_id={quarto_id}, 
+                data_entrada='{data_entrada}', 
+                data_saida='{data_saida}' 
+            WHERE id={id}
+        """
+        self.db.execute_query(query)
+        self.db.disconnect()
+
+    def delete_reserva(self, id):
+        reserva = self.consulta_reserva(id)
+        if reserva:
+            quarto_id = reserva["quarto_id"]
+
+            self.db.connect()
+            self.db.execute_query(f"DELETE FROM RESERVAS WHERE id={id}")
+            self.db.execute_query(f"UDPATE quartos SET status='disponivel' WHERE id={quarto_id}")
+            self.db.disconnect()
+            return True #Caso a reserva seja encontrada
+        return False #Caso não o seja

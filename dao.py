@@ -43,7 +43,7 @@ class Database:
     def fetch_all(self, query, params=None): #BUSCAR VÁRIOS REGISTROS
         cursor = None
         try:
-            cursor = self.connection.cursor(dictionary=True)
+            cursor = self.connection.cursor(dictionary=True) #DEFINE COMO DICIONÁRIO, FACILITA NAS BUSCAS
             cursor.execute(query, params or ())
             result = cursor.fetchall()
             return result
@@ -57,7 +57,7 @@ class Database:
     def fetch_one(self, query, params=None): #BUSCAR APENAS UM REGISTRO
         cursor = None
         try:
-            cursor = self.connection.cursor(dictionary=True)
+            cursor = self.connection.cursor(dictionary=True) #DEFINE COMO DICIONÁRIO, FACILITA NAS BUSCAS
             cursor.execute(query, params or ())
             result = cursor.fetchone()
             return result
